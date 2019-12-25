@@ -128,16 +128,17 @@ export class MysqlDatabase implements Database {
         let tableDefinition: TableDefinition = {}
 
         const tableColumns = await this.queryAsync(
-            'SELECT column_name, data_type, is_nullable ' +
+            'SELECT column_name, column_default, data_type, is_nullable ' +
             'FROM information_schema.columns ' +
             'WHERE table_name = ? and table_schema = ?',
             [tableName, tableSchema]
         )
-        tableColumns.map((schemaItem: { column_name: string, data_type: string, is_nullable: string }) => {
+        tableColumns.map((schemaItem: { column_name: string, column_default: string | null, data_type: string, is_nullable: string }) => {
             const columnName = schemaItem.column_name
             const dataType = schemaItem.data_type
             tableDefinition[columnName] = {
                 udtName: /^(enum|set)$/i.test(dataType) ? MysqlDatabase.getEnumNameFromColumn(dataType, columnName) : dataType,
+                default: schemaItem.column_default,
                 nullable: schemaItem.is_nullable === 'YES'
             }
         })

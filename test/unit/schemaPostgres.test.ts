@@ -73,7 +73,7 @@ describe('PostgresDatabase', () => {
         it('writes correct query', () => {
             PostgresProxy.getTableDefinition('tableName', 'schemaName')
             assert.equal(db.each.getCall(0).args[0],
-                'SELECT column_name, udt_name, is_nullable ' +
+                'SELECT column_name, column_default, udt_name, is_nullable ' +
                 'FROM information_schema.columns ' +
                 'WHERE table_name = $1 and table_schema = $2')
             assert.deepEqual(db.each.getCall(0).args[1], ['tableName', 'schemaName'])
@@ -82,13 +82,13 @@ describe('PostgresDatabase', () => {
             let tableDefinition = await PostgresProxy.getTableDefinition()
             const callback = db.each.getCall(0).args[2]
             const dbResponse = [
-                {column_name: 'col1', udt_name: 'int2', is_nullable: 'YES'},
-                {column_name: 'col2', udt_name: 'text', is_nullable: 'NO'}
+                {column_name: 'col1', udt_name: 'int2', column_default: null, is_nullable: 'YES'},
+                {column_name: 'col2', udt_name: 'text', column_default: null, is_nullable: 'NO'}
             ]
             dbResponse.forEach(callback)
             assert.deepEqual(tableDefinition, {
-                col1: { udtName: 'int2', nullable: true },
-                col2: { udtName: 'text', nullable: false }
+                col1: { udtName: 'int2', default: null, nullable: true },
+                col2: { udtName: 'text', default: null, nullable: false }
             })
         })
     })
@@ -152,6 +152,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'bpchar',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -161,6 +162,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'char',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -170,6 +172,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'varchar',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -179,6 +182,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'text',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -188,15 +192,17 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'citext',
+                        default: null,
                         nullable: false
                     }
                 }
                 assert.equal(PostgresDBReflection.mapTableDefinitionToType(td,[],options).column.tsType, 'string')
-            })            
+            })
             it('uuid', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'uuid',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -206,6 +212,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'bytea',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -215,6 +222,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'inet',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -224,6 +232,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'time',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -233,6 +242,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'timetz',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -242,6 +252,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'interval',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -251,6 +262,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'name',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -262,6 +274,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'int2',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -271,6 +284,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'int4',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -280,6 +294,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'int8',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -289,6 +304,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'float4',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -298,6 +314,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'float8',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -307,6 +324,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'numeric',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -316,6 +334,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'money',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -325,6 +344,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'oid',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -336,6 +356,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'bool',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -347,6 +368,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'json',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -356,6 +378,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'jsonb',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -367,6 +390,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'date',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -376,6 +400,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'timestamp',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -385,6 +410,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'timestamptz',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -396,6 +422,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_int2',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -405,6 +432,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_int4',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -414,6 +442,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_int8',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -423,6 +452,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_float4',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -432,6 +462,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_float8',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -441,6 +472,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_numeric',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -450,6 +482,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_money',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -461,6 +494,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_bool',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -472,6 +506,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_varchar',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -481,6 +516,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_text',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -490,15 +526,17 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_citext',
+                        default: null,
                         nullable: false
                     }
                 }
                 assert.equal(PostgresDBReflection.mapTableDefinitionToType(td, ['CustomType'], options).column.tsType, 'Array<string>')
-            })            
+            })
             it('_uuid', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_uuid',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -508,18 +546,20 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_bytea',
+                        default: null,
                         nullable: false
                     }
                 }
                 assert.equal(PostgresDBReflection.mapTableDefinitionToType(td, ['CustomType'], options).column.tsType, 'Array<string>')
             })
         })
-        
+
         describe('maps to Array<Object>', () => {
             it('_json', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_json',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -529,30 +569,33 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_jsonb',
+                        default: null,
                         nullable: false
                     }
                 }
                 assert.equal(PostgresDBReflection.mapTableDefinitionToType(td,[],options).column.tsType, 'Array<Object>')
             })
         })
-        
+
         describe('maps to Array<Date>', () => {
             it('_timestamptz', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: '_timestamptz',
+                        default: null,
                         nullable: false
                     }
                 }
                 assert.equal(PostgresDBReflection.mapTableDefinitionToType(td,[],options).column.tsType, 'Array<Date>')
             })
         })
-        
+
         describe('maps to custom', () => {
             it('CustomType', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'CustomType',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -564,6 +607,7 @@ describe('PostgresDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'UnknownType',
+                        default: null,
                         nullable: false
                     }
                 }

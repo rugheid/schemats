@@ -2,6 +2,7 @@ import Options from './options'
 
 export interface ColumnDefinition {
     udtName: string,
+    default: string | null,
     nullable: boolean,
     tsType?: string
 }

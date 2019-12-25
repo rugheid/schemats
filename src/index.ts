@@ -3,7 +3,7 @@
  * Created by xiamx on 2016-08-10.
  */
 
-import { generateEnumType, generateTableTypes, generateTableInterface } from './typescript'
+import { generateEnumType, generateTableInterface } from './typescript'
 import { getDatabase, Database } from './schema'
 import Options, { OptionValues } from './options'
 import { processString, Options as ITFOptions } from 'typescript-formatter'
@@ -45,7 +45,7 @@ function buildHeader (db: Database, tables: string[], schema: string|null, optio
     `
 }
 
-export async function typescriptOfTable (db: Database|string, 
+export async function typescriptOfTable (db: Database|string,
                                          table: string,
                                          schema: string,
                                          options = new Options()) {
@@ -55,8 +55,8 @@ export async function typescriptOfTable (db: Database|string,
 
     let interfaces = ''
     let tableTypes = await db.getTableTypes(table, schema, options)
-    interfaces += generateTableTypes(table, tableTypes, options)
-    interfaces += generateTableInterface(table, tableTypes, options)
+    interfaces += generateTableInterface(table, tableTypes, false, options)
+    interfaces += generateTableInterface(table, tableTypes, true, options)
     return interfaces
 }
 
@@ -108,5 +108,5 @@ export async function typescriptOfSchema (db: Database|string,
     return processedResult.dest
 }
 
-export {Database, getDatabase} from './schema'
-export {Options, OptionValues}
+export { Database, getDatabase } from './schema'
+export { Options, OptionValues }

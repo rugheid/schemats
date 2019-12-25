@@ -67,7 +67,7 @@ export class PostgresDatabase implements Database {
                     return column
                 case '_varchar':
                 case '_text':
-                case '_citext':                    
+                case '_citext':
                 case '_uuid':
                 case '_bytea':
                     column.tsType = 'Array<string>'
@@ -119,15 +119,16 @@ export class PostgresDatabase implements Database {
 
     public async getTableDefinition (tableName: string, tableSchema: string) {
         let tableDefinition: TableDefinition = {}
-        type T = { column_name: string, udt_name: string, is_nullable: string }
+        type T = { column_name: string, column_default: string | null, udt_name: string, is_nullable: string }
         await this.db.each<T>(
-            'SELECT column_name, udt_name, is_nullable ' +
+            'SELECT column_name, column_default, udt_name, is_nullable ' +
             'FROM information_schema.columns ' +
             'WHERE table_name = $1 and table_schema = $2',
             [tableName, tableSchema],
             (schemaItem: T) => {
                 tableDefinition[schemaItem.column_name] = {
                     udtName: schemaItem.udt_name,
+                    default: schemaItem.column_default,
                     nullable: schemaItem.is_nullable === 'YES'
                 }
             })

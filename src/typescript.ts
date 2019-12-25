@@ -25,15 +25,20 @@ function normalizeName (name: string, options: Options): string {
     }
 }
 
-export function generateTableInterface (tableNameRaw: string, tableDefinition: TableDefinition, options: Options) {
+export function generateTableInterface (tableNameRaw: string, tableDefinition: TableDefinition, insert: boolean, options: Options) {
     const tableName = options.transformTypeName(tableNameRaw)
     let members = ''
-    Object.keys(tableDefinition).map(c => options.transformColumnName(c)).forEach((columnName) => {
-        members += `${columnName}: ${tableName}Fields.${normalizeName(columnName, options)};\n`
+    Object.keys(tableDefinition).forEach((columnNameRaw) => {
+        let columnDefinition = tableDefinition[columnNameRaw]
+        let type = columnDefinition.tsType
+        let nullable = columnDefinition.nullable ? ' | null' : ''
+        let optional = insert && (columnDefinition.default !== null || columnDefinition.nullable) ? '?' : ''
+        const columnName = options.transformColumnName(columnNameRaw)
+        members += `${columnName}${optional}: ${type}${nullable};\n`
     })
-
+    let insertInterface = insert ? 'Insert' : ''
     return `
-        export interface ${normalizeName(tableName, options)} {
+        export interface ${normalizeName(tableName, options)}${insertInterface} {
         ${members}
         }
     `
@@ -48,21 +53,4 @@ export function generateEnumType (enumObject: any, options: Options) {
         enumString += ';\n'
     }
     return enumString
-}
-
-export function generateTableTypes (tableNameRaw: string, tableDefinition: TableDefinition, options: Options) {
-    const tableName = options.transformTypeName(tableNameRaw)
-    let fields = ''
-    Object.keys(tableDefinition).forEach((columnNameRaw) => {
-        let type = tableDefinition[columnNameRaw].tsType
-        let nullable = tableDefinition[columnNameRaw].nullable ? '| null' : ''
-        const columnName = options.transformColumnName(columnNameRaw)
-        fields += `export type ${normalizeName(columnName, options)} = ${type}${nullable};\n`
-    })
-
-    return `
-        export namespace ${tableName}Fields {
-        ${fields}
-        }
-    `
 }

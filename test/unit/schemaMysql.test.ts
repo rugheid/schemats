@@ -120,7 +120,7 @@ describe('MysqlDatabase', () => {
             MysqlDBReflection.prototype.queryAsync.returns(Promise.resolve([]))
             await db.getTableDefinition('testtable', 'testschema')
             assert.deepEqual(MysqlDBReflection.prototype.queryAsync.getCall(0).args, [
-                'SELECT column_name, data_type, is_nullable ' +
+                'SELECT column_name, column_default, data_type, is_nullable ' +
                 'FROM information_schema.columns ' +
                 'WHERE table_name = ? and table_schema = ?',
                 ['testtable', 'testschema']
@@ -128,15 +128,15 @@ describe('MysqlDatabase', () => {
         })
         it('handles response', async () => {
             MysqlDBReflection.prototype.queryAsync.returns(Promise.resolve([
-                { column_name: 'column1', data_type: 'data1', is_nullable: 'NO' },
-                { column_name: 'column2', data_type: 'enum', is_nullable: 'YES' },
-                { column_name: 'column3', data_type: 'set', is_nullable: 'YES' }
+                { column_name: 'column1', column_default: null, data_type: 'data1', is_nullable: 'NO' },
+                { column_name: 'column2', column_default: null, data_type: 'enum', is_nullable: 'YES' },
+                { column_name: 'column3', column_default: null, data_type: 'set', is_nullable: 'YES' }
             ]))
             const schemaTables = await db.getTableDefinition('testtable', 'testschema')
             assert.deepEqual(schemaTables, {
-                column1: { udtName: 'data1', nullable: false },
-                column2: { udtName: 'enum_column2', nullable: true },
-                column3: { udtName: 'set_column3', nullable: true }
+                column1: { udtName: 'data1', default: null, nullable: false },
+                column2: { udtName: 'enum_column2', default: null, nullable: true },
+                column3: { udtName: 'set_column3', default: null, nullable: true }
             })
         })
     })
@@ -200,6 +200,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'char',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -209,6 +210,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'varchar',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -218,6 +220,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'text',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -227,6 +230,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'tinytext',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -236,6 +240,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'mediumtext',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -245,6 +250,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'longtext',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -254,6 +260,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'time',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -263,6 +270,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'geometry',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -272,6 +280,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'set',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -281,6 +290,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'enum',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -292,6 +302,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'integer',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -301,6 +312,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'int',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -310,6 +322,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'smallint',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -319,6 +332,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'mediumint',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -328,6 +342,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'bigint',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -337,6 +352,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'double',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -346,6 +362,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'decimal',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -355,6 +372,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'numeric',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -364,6 +382,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'float',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -373,6 +392,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'year',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -384,6 +404,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'tinyint',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -395,6 +416,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'json',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -406,6 +428,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'date',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -415,6 +438,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'datetime',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -424,6 +448,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'timestamp',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -435,6 +460,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'tinyblob',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -444,6 +470,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'mediumblob',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -453,6 +480,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'longblob',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -462,6 +490,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'blob',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -471,6 +500,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'binary',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -480,6 +510,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'varbinary',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -489,6 +520,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'bit',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -500,6 +532,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'CustomType',
+                        default: null,
                         nullable: false
                     }
                 }
@@ -511,6 +544,7 @@ describe('MysqlDatabase', () => {
                 const td: TableDefinition = {
                     column: {
                         udtName: 'UnknownType',
+                        default: null,
                         nullable: false
                     }
                 }
